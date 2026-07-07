@@ -1435,3 +1435,75 @@ body.light .config-step::before { color: var(--purple); }
   }
   .level-chip { font-size: 9px; padding: 2px 5px; }
 }
+
+/* ── Pillar accordion ────────────────────────────────────────── */
+.pillar-acc {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color var(--transition);
+}
+
+.pillar-acc--open {
+  border-color: var(--border-hi);
+}
+
+.pillar-acc__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--transition);
+}
+
+.pillar-acc__header:hover {
+  background: var(--surface2);
+}
+
+.pillar-acc__name {
+  font-size: 15px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.pillar-acc__status {
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--text-dim);
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.pillar-acc__status--done {
+  color: var(--accent);
+  background: var(--accent-dim);
+  border-color: var(--accent-border);
+}
+
+.pillar-acc__chevron {
+  color: var(--text-dim);
+  font-size: 13px;
+  transition: transform var(--transition);
+}
+
+.pillar-acc__chevron--open {
+  transform: rotate(180deg);
+}
+
+.pillar-acc__body {
+  padding: var(--space-2) var(--space-5) var(--space-6);
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.pillar-acc__body .pillar-framing {
+  margin-top: var(--space-3);
+}
