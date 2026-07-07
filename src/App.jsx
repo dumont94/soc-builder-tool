@@ -1,22 +1,15 @@
 import { useState, useEffect } from "react";
-import Questionnaire from "./components/Questionnaire.jsx";
-import Walkthrough from "./components/Walkthrough.jsx";
-import Summary from "./components/Summary.jsx";
-import { buildRecommendation } from "./recommendations.js";
+import Assessment from "./components/Assessment.jsx";
+import PostureRead from "./components/PostureRead.jsx";
+import { computePosture } from "./scoring.js";
 
-const SCREENS = {
-  QUESTIONNAIRE: "questionnaire",
-  LOADING: "loading",
-  WALKTHROUGH: "walkthrough",
-  SUMMARY: "summary",
-};
+const SCREENS = { ASSESS: "assess", READ: "read" };
 
 export default function App() {
-  const [screen, setScreen] = useState(SCREENS.QUESTIONNAIRE);
-  const [recommendation, setRecommendation] = useState(null);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [error, setError] = useState(null);
-  // SOC apps default to dark — analysts live in dark dashboards
+  const [screen, setScreen] = useState(SCREENS.ASSESS);
+  const [answers, setAnswers] = useState({});
+  const [posture, setPosture] = useState(null);
+  // SOC tools default to dark — analysts live in dark dashboards
   const [theme, setTheme] = useState(
     () => localStorage.getItem("soc-theme") || "dark"
   );
@@ -30,34 +23,24 @@ export default function App() {
     setTheme((t) => (t === "dark" ? "light" : "dark"));
   }
 
-  function handleSubmit(formData) {
-    setScreen(SCREENS.LOADING);
-    setError(null);
-    try {
-      const data = buildRecommendation(formData);
-      setRecommendation(data);
-      setCurrentStep(0);
-      setScreen(SCREENS.WALKTHROUGH);
-    } catch (err) {
-      setError(err.message);
-      setScreen(SCREENS.QUESTIONNAIRE);
-    }
+  function handleComplete() {
+    setPosture(computePosture(answers));
+    setScreen(SCREENS.READ);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function handleWalkthroughComplete() {
-    setScreen(SCREENS.SUMMARY);
+  // Back to the assessment with answers intact, for adjusting
+  function handleAdjust() {
+    setScreen(SCREENS.ASSESS);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function handleReset() {
-    setRecommendation(null);
-    setCurrentStep(0);
-    setError(null);
-    setScreen(SCREENS.QUESTIONNAIRE);
+    setAnswers({});
+    setPosture(null);
+    setScreen(SCREENS.ASSESS);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
-
-  const pathLabel = recommendation ? recommendation.path_info.name : null;
 
   return (
     <div className="app">
@@ -65,12 +48,14 @@ export default function App() {
         <div className="app-header__logo">
           <div className="app-header__dot" />
           <div>
-            <div className="app-header__title">SOC Foundations Builder</div>
+            <div className="app-header__title">SOC Posture</div>
             <div className="app-header__sub">by Nigel Dumont</div>
           </div>
         </div>
         <div className="app-header__right">
-          {pathLabel && <div className="app-header__badge">{pathLabel}</div>}
+          {posture && screen === SCREENS.READ && (
+            <div className="app-header__badge">{posture.overall.levelName}</div>
+          )}
           <button className="theme-toggle" onClick={toggleTheme}>
             {theme === "dark" ? "☀ light" : "☾ dark"}
           </button>
@@ -84,35 +69,19 @@ export default function App() {
       </header>
 
       <main className="main">
-        {screen === SCREENS.QUESTIONNAIRE && (
-          <Questionnaire onSubmit={handleSubmit} error={error} />
-        )}
-
-        {screen === SCREENS.LOADING && (
-          <div className="loading">
-            <div className="loading__spinner" />
-            <div className="loading__text">Building your 90-day security plan…</div>
-          </div>
-        )}
-
-        {screen === SCREENS.WALKTHROUGH && recommendation && (
-          <Walkthrough
-            recommendation={recommendation}
-            currentStep={currentStep}
-            onStepChange={setCurrentStep}
-            onComplete={handleWalkthroughComplete}
+        {screen === SCREENS.ASSESS && (
+          <Assessment
+            answers={answers}
+            onChange={setAnswers}
+            onComplete={handleComplete}
           />
         )}
 
-        {screen === SCREENS.SUMMARY && recommendation && (
-          <Summary
-            recommendation={recommendation}
+        {screen === SCREENS.READ && posture && (
+          <PostureRead
+            posture={posture}
+            onAdjust={handleAdjust}
             onReset={handleReset}
-            onReviewStep={(idx) => {
-              setCurrentStep(idx);
-              setScreen(SCREENS.WALKTHROUGH);
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
           />
         )}
       </main>

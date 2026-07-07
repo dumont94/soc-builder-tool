@@ -1333,3 +1333,105 @@ body.light .config-step::before { color: var(--purple); }
     padding: var(--space-2) var(--space-3);
   }
 }
+
+/* ── Posture assessment & read ───────────────────────────────── */
+.pillar-framing {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-top: -4px;
+}
+
+.pillar-question {
+  margin-top: var(--space-4);
+}
+
+.pillar-hint {
+  font-size: 12px;
+  font-family: var(--mono);
+  color: var(--text-dim);
+  margin: -6px 0 var(--space-3);
+}
+
+.pillar-bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: var(--space-6) 0;
+}
+
+.pillar-bar {
+  display: grid;
+  grid-template-columns: 190px 1fr 110px;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.pillar-bar__name {
+  font-size: 12px;
+  font-family: var(--mono);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.pillar-bar__track {
+  height: 8px;
+  background: var(--surface3);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.pillar-bar__fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 400ms ease;
+}
+
+.pillar-bar__fill--l1 { background: var(--red); }
+.pillar-bar__fill--l2 { background: var(--amber); }
+.pillar-bar__fill--l3 { background: var(--blue); }
+.pillar-bar__fill--l4 { background: var(--accent); }
+
+.level-chip {
+  font-size: 11px;
+  font-family: var(--mono);
+  border-radius: var(--radius-sm);
+  padding: 2px 8px;
+  white-space: nowrap;
+  justify-self: start;
+}
+
+.level-chip--1 { color: var(--red);    background: var(--red-dim);    border: 1px solid var(--red-border); }
+.level-chip--2 { color: var(--amber);  background: var(--amber-dim);  border: 1px solid var(--amber-border); }
+.level-chip--3 { color: var(--blue);   background: var(--blue-dim);   border: 1px solid var(--blue-border); }
+.level-chip--4 { color: var(--accent); background: var(--accent-dim); border: 1px solid var(--accent-border); }
+
+.pillar-read__header {
+  justify-content: flex-start;
+}
+
+.pillar-read__header .section__title {
+  flex: 1;
+}
+
+.pillar-read__gaps-label {
+  font-size: 12px;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--red);
+  margin: var(--space-5) 0 var(--space-3);
+}
+
+@media (max-width: 768px) {
+  .pillar-bar {
+    grid-template-columns: 110px 1fr 84px;
+    gap: var(--space-2);
+  }
+  .pillar-bar__name {
+    font-size: 10px;
+    white-space: normal;
+    line-height: 1.3;
+  }
+  .level-chip { font-size: 9px; padding: 2px 5px; }
+}
